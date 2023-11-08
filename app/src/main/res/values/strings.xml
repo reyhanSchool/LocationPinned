@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">LocationPinned</string>
+    <string name="title_activity_create_location">CreateLocation</string>
+</resources>
