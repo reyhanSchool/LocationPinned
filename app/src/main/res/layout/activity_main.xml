@@ -22,7 +22,14 @@
                 android:id="@+id/TitleView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Location Pinned" />
+                android:text="Location Pinned"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:textColor="@color/brown"
+            />
 
             <LinearLayout
                 android:layout_width="match_parent"

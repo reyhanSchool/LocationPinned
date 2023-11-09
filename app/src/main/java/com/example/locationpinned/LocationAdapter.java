@@ -76,5 +76,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
     }
+    public void updateData(List<Location> newLocations) {
+        locationList.clear();
+        locationList.addAll(newLocations);
+    }
 }
 

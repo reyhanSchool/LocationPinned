@@ -1,5 +1,7 @@
 package com.example.locationpinned;
 
+import static com.example.locationpinned.LocationFileReader.readLocationsFromFile;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,9 +22,12 @@ import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, LocationAdapter.OnItemClickListener {
     private RecyclerView recyclerView;
@@ -31,6 +36,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private List<Location> locations;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -48,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         });
 
         dbHelper = new MyDatabaseHelper(this);
+        // readLocationsFromFile(MainActivity.this, dbHelper);
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -55,8 +63,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         locations = readLocationsFromDatabase();
         locationAdapter = new LocationAdapter(locations);
         recyclerView.setAdapter(locationAdapter);
-        locationAdapter.setOnItemClickListener(this); // Set the click listener
-
+        locationAdapter.setOnItemClickListener(this);
 
         // String address = reverseGeocode(this, latitude, longitude); // Replace 'this' with your context
     }
@@ -66,9 +73,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         Location clickedNote = locations.get(position);
 //
 //        // Start the new activity and pass the note data
-//        Intent intent = new Intent(MainActivity.this, create_location.class);
-//        intent.putExtra("id", clickedNote.getId());
-//        startActivity(intent);
+        Intent intent = new Intent(MainActivity.this, CreateLocation.class);
+        intent.putExtra("id", clickedNote.getId());
+        startActivity(intent);
     }
     @Override
     public boolean onQueryTextSubmit(String query) {
@@ -106,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     public void renderLocations(List<Location> locations){
         // Read data from the database
-        locationAdapter = new LocationAdapter(locations);
-        recyclerView.setAdapter(locationAdapter);
+        locationAdapter.updateData(locations);
+        locationAdapter.notifyDataSetChanged();
     }
 
     private List<Location> readLocationsFromDatabase() {
@@ -165,29 +172,4 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
 
-    // Define a method for reverse geocoding
-    public static String reverseGeocode(Context context, double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(context);
-
-        try {
-            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                Address address = addresses.get(0);
-                String addressText = "";
-
-                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                    addressText += address.getAddressLine(i);
-                    if (i < address.getMaxAddressLineIndex()) {
-                        addressText += ", ";
-                    }
-                }
-
-                return addressText;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "Address not found";
-    }
 }
